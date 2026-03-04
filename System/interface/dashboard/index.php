@@ -7,8 +7,8 @@
 // Cargar el sistema
 require_once __DIR__ . '/../../bootstrap.php';
 
-// Opcional: Requerir autenticación
-// requireAuth();
+// Requerir autenticación
+requireAuth();
 
 // Configurar variables para el layout
 $page_title = 'Dashboard';
