@@ -82,7 +82,7 @@ function currentUser() {
  */
 function requireAuth() {
     if (!isAuthenticated()) {
-        redirect('System/interface/session/login.php');
+        redirect('/Sistema_Inventario/System/interface/session/login.php');
     }
 }
 

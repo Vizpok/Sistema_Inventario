@@ -12,7 +12,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= isset($page_title) ? $page_title . ' - ' : '' ?>SGI - Sistema Inventario</title>
 
-    <link rel="stylesheet" href="<?= $base_url ?? '../..' ?>/System/assets/css/styles.css">
+    <link rel="stylesheet" href="<?= $base_url ?? '../..' ?>/System/assets/css/styles.css?v=<?= filemtime(__DIR__ . '/../../assets/css/styles.css') ?>">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
 </head>
 <body>
@@ -23,46 +23,81 @@
                 <i class="bi bi-box-seam"></i>
             </div>
             <ul class="sidebar-menu">
-                <?php $current_page = basename($_SERVER['PHP_SELF']); ?>
+                <?php 
+                    // Convertir ruta a formato consistente
+                    $script_path = str_replace('\\', '/', $_SERVER['SCRIPT_FILENAME']);
+                    $is_dashboard = strpos($script_path, '/dashboard/') !== false;
+                    $is_inventory = strpos($script_path, '/inventory/') !== false && strpos($script_path, '/catalog/') === false;
+                    $is_reception = strpos($script_path, '/reception/') !== false;
+                    $is_movements = strpos($script_path, '/movements/') !== false;
+                    $is_catalog = strpos($script_path, '/catalog/') !== false;
+                ?>
                 
                 <li>
-                    <a href="<?= $base_url ?? '../..' ?>/dashboard.php" class="<?= ($current_page == 'dashboard.php' || $current_page == 'index.php') ? 'active' : ''; ?>">
+                    <a href="<?= $base_url ?? '/Sistema_Inventario' ?>/System/interface/dashboard/" class="nav-dashboard <?= $is_dashboard ? 'active' : ''; ?>">
                         <i class="bi bi-grid-1x2-fill"></i>
                         <span>Dashboard</span>
                     </a>
                 </li>
 
                 <li>
-                    <a href="<?= $base_url ?? '../..' ?>/inventario.php" class="<?= ($current_page == 'inventario.php') ? 'active' : ''; ?>">
+                    <a href="<?= $base_url ?? '/Sistema_Inventario' ?>/System/interface/inventory/" class="<?= $is_inventory ? 'active' : ''; ?>">
                         <i class="bi bi-box-seam-fill"></i>
                         <span>Inventario</span>
                     </a>
                 </li>
 
                 <li>
-                    <a href="<?= $base_url ?? '../..' ?>/recepcion.php" class="<?= ($current_page == 'recepcion.php') ? 'active' : ''; ?>">
+                    <a href="<?= $base_url ?? '/Sistema_Inventario' ?>/System/interface/reception/" class="<?= $is_reception ? 'active' : ''; ?>">
                         <i class="bi bi-box-arrow-in-down"></i>
                         <span>Recepción</span>
                     </a>
                 </li>
 
                 <li>
-                    <a href="<?= $base_url ?? '../..' ?>/movimientos.php" class="<?= ($current_page == 'movimientos.php') ? 'active' : ''; ?>">
+                    <a href="<?= $base_url ?? '/Sistema_Inventario' ?>/System/interface/movements/" class="<?= $is_movements ? 'active' : ''; ?>">
                         <i class="bi bi-arrow-left-right"></i>
                         <span>Movimientos</span>
                     </a>
                 </li>
 
-                <li>
-                    <a href="<?= $base_url ?? '../..' ?>/catalogo.php" class="<?= ($current_page == 'catalogo.php') ? 'active' : ''; ?>">
+                <li class="menu-item-with-submenu" id="catalogMenu">
+                    <a href="javascript:void(0);" class="menu-toggle" role="button">
                         <i class="bi bi-journal-text"></i>
                         <span>Catálogo</span>
+                        <i class="bi bi-chevron-down chevron-icon"></i>
                     </a>
+                    <ul class="submenu" id="catalogSubmenu">
+                        <li>
+                            <a href="<?= $base_url ?? '/Sistema_Inventario' ?>/System/interface/catalog/products/productos.php" class="nav-catalog-item <?= ($is_catalog && strpos($script_path, 'producto') !== false) ? 'active' : ''; ?>">
+                                <i class="bi bi-box-seam"></i>
+                                <span>Productos</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="<?= $base_url ?? '/Sistema_Inventario' ?>/System/interface/catalog/categories/categorias.php" class="nav-catalog-item <?= ($is_catalog && strpos($script_path, 'categoria') !== false) ? 'active' : ''; ?>">
+                                <i class="bi bi-folder"></i>
+                                <span>Categorías</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="<?= $base_url ?? '/Sistema_Inventario' ?>/System/interface/catalog/suppliers/proveedores.php" class="nav-catalog-item <?= ($is_catalog && strpos($script_path, 'proveedor') !== false) ? 'active' : ''; ?>">
+                                <i class="bi bi-building"></i>
+                                <span>Proveedores</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="<?= $base_url ?? '/Sistema_Inventario' ?>/System/interface/catalog/locations/ubicaciones.php" class="nav-catalog-item <?= ($is_catalog && strpos($script_path, 'ubicacion') !== false) ? 'active' : ''; ?>">
+                                <i class="bi bi-geo-alt"></i>
+                                <span>Ubicaciones</span>
+                            </a>
+                        </li>
+                    </ul>
                 </li>
             </ul>
 
             <div class="sidebar-footer">
-                <a href="<?= $base_url ?? '../..' ?>/System/interface/session/logout.php">
+                <a href="<?= $base_url ?? '/Sistema_Inventario' ?>/System/interface/session/logout.php">
                     <i class="bi bi-box-arrow-right"></i>
                     <span>Salir</span>
                 </a>
