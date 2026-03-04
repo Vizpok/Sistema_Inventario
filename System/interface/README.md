@@ -2,23 +2,45 @@
 
 Módulos de interfaz del sistema.
 
-## Regla de estructura
+## Estructura
 
-- Esta carpeta concentra únicamente interfaces (vistas y acciones por módulo).
-- Cada módulo implementa su flujo con operaciones tipo CRUD.
+- `layouts/`: plantillas reutilizables (header.php, footer.php)
+- `session/`: autenticación (login, logout)
+- `dashboard/`: panel principal
+- `catalog/`: productos, categorías, proveedores
+- `reception/`: entradas de almacén
+- `inventory/`: inventario, usuarios, clientes
+- `movements/`: historial de movimientos
 
-## Módulos del entregable
+## Estado actual
 
-- `session/`: autenticación (login/logout).
-- `dashboard/`: panel principal.
-- `catalog/`: productos, categorías, proveedores y ubicaciones.
-- `reception/`: entradas de almacén.
-- `inventory/`: inventario, usuarios y clientes.
-- `movements/`: historial de movimientos y ventas.
+- Implementado: `session/`, `dashboard/`, `layouts/`.
+- Pendiente de implementación de pantallas: `catalog/`, `reception/`, `inventory/`, `movements/`.
 
-## Distribución de trabajo (referencia)
+## Flujo de Acceso
 
-- Isai: autenticación, dashboard y productos.
-- Edwin: categorías, proveedores y ubicaciones.
-- Juan: recepción, inventario, usuarios y clientes.
-- Erick: movimientos y ventas.
+1. **Login** (`session/login.php`)
+   - Primera página al acceder al sistema
+   - Valida credenciales
+   - Crea sesión si es correcto
+   - Redirige a dashboard
+
+2. **Dashboard** (`dashboard/index.php`)
+   - Página principal después de login
+   - Acceso a todos los módulos
+
+3. **Logout** (`session/logout.php`)
+   - Destruye la sesión
+   - Redirige a login
+
+## Layouts Base
+
+Todas las páginas usan:
+- `layouts/header.php` - Navbar con sidebar
+- `layouts/footer.php` - Cierre de HTML
+
+**Excepción:** Login no usa layouts (página pública sin autenticación)
+
+## Nota
+
+Las carpetas pendientes ya cuentan con README para definir alcance, pero todavía no contienen archivos PHP funcionales.

@@ -12,7 +12,7 @@ require_once __DIR__ . '/../../bootstrap.php';
 
 // Configurar variables para el layout
 $page_title = 'Dashboard';
-$base_url = '../..';
+$base_url = '/Sistema_Inventario';
 
 // Incluir header
 include __DIR__ . '/../layouts/header.php';

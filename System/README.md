@@ -1,64 +1,30 @@
 # System
 
-Este directorio contiene la base del sistema de inventario.
+Núcleo técnico del sistema de inventario.
 
-Metodología de trabajo: prototipo.
-Base de datos: local (XAMPP), sin servicios en la nube para este entregable.
+## Estructura
 
-## Estructura estándar
+- `bootstrap.php`: inicialización global (sesión, config, helpers, clases y constantes).
+- `config/`: configuración de aplicación, BD, rutas y sesión.
+- `core/`: clases principales (`Auth.php`, `Database.php`).
+- `helpers/`: funciones globales reutilizables.
+- `interface/`: vistas y módulos de UI.
+- `assets/`: recursos estáticos (CSS, iconos e imágenes).
+- `sql/`: scripts para crear y poblar la base de datos.
 
-- `core/`: clases principales del sistema (Database, etc.).
-- `assets/`: recursos estáticos (css, iconos e imágenes).
-- `config/`: configuración central de la aplicación.
-- `interface/`: módulos de interfaz por funcionalidad.
-- `sql/`: scripts SQL versionados del sistema.
-- `helpers/`: funciones auxiliares y utilidades del sistema.
+## Estado funcional actual
 
-## Archivos principales
+- Autenticación y sesión con `Auth.php` + `session/login.php`/`logout.php`.
+- Dashboard base en `interface/dashboard/index.php`.
+- Layout reutilizable en `interface/layouts/`.
+- Conexión y consultas a BD con `Database.php`.
 
-### core/Database.php
-Clase oficial para manejo de conexión a base de datos.
+## Módulos pendientes
 
-**Características:**
-- Conexión MySQLi con configuración centralizada desde `config/database.php`
-- Métodos: `select()`, `execute()`, `escape()`, `lastInsertId()`
-- Protección contra SQL injection
-- Manejo automático de charset y cierre de conexión
-- Singleton accesible globalmente mediante `db()`
-
-**Uso:**
-```php
-require 'System/bootstrap.php';
-$database = db();
-$productos = $database->select("SELECT * FROM productos");
-```
-
-### bootstrap.php
-Inicializador principal del sistema. Debe incluirse al inicio de cada archivo PHP.
-
-**Funciones:**
-- Inicia y configura sesiones según `config/session.php`
-- Carga todas las configuraciones (app, database, paths, session)
-- Define constantes globales: `APP_NAME`, `APP_ENV`, `APP_DEBUG`, `TIMEZONE`, rutas
-- Carga funciones auxiliares desde `helpers/functions.php`
-- Configura zona horaria y manejo de errores según ambiente
-- Provee función global `db()` para acceso a base de datos
-
-**Uso:**
-```php
-<?php
-require_once __DIR__ . '/System/bootstrap.php';
-// Ya tienes acceso a todas las funciones y configuraciones
-```
+Las carpetas `interface/catalog`, `interface/inventory`, `interface/movements` y `interface/reception` están preparadas, pero todavía sin implementación de pantallas PHP.
 
 ## Convenciones
 
-- Cada carpeta debe contener al menos un archivo (`README.md` o `.gitkeep`) para que Git la incluya.
-- No subir credenciales reales al repositorio.
-- Mantener una estructura modular por carpeta para evitar desorden.
-
-## Alcance del entregable
-
-- Interfaces incluidas: login/logout, dashboard, catálogos, recepción, inventario, movimientos y ventas.
-- Roles previstos: `admin` y `empleado`; en este entregable se prioriza flujo de `empleado`.
-- No se crea módulo separado de empleados; la gestión se cubre desde usuarios y restricciones internas.
+- Incluir `System/bootstrap.php` al inicio de cada página del sistema.
+- Mantener la lógica de negocio fuera de `interface/`.
+- No subir credenciales reales.

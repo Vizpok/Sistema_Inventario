@@ -2,32 +2,24 @@
 
 Módulo de catálogo.
 
-## Debe incluir
+## Estado
 
-- Productos:
-	- `productos.php`
-	- `producto_nuevo.php`
-	- `producto_guardar.php`
-	- `producto_editar.php`
-	- `producto_actualizar.php`
-- Categorías:
-	- `categorias.php`
-	- `categoria_nuevo.php`
-	- `categoria_guardar.php`
-	- `categoria_editar.php`
-	- `categoria_actualizar.php`
-- Proveedores:
-	- `proveedores.php`
-	- `proveedor_nuevo.php`
-	- `proveedor_guardar.php`
-	- `proveedor_editar.php`
-	- `proveedor_actualizar.php`
-- Ubicaciones:
-	- `ubicaciones.php`
-	- `ubicacion_nuevo.php`
-	- `ubicacion_guardar.php`
-	- `ubicacion_editar.php`
-	- `ubicacion_actualizar.php`
+Este módulo está **pendiente de implementación**. Actualmente solo existe esta guía.
+
+## Alcance previsto
+
+- Catálogo de productos
+- Catálogo de categorías
+- Catálogo de proveedores
+- Catálogo de ubicaciones
+
+## Sugerencia de archivos al implementarlo
+
+- Listado por entidad (`productos.php`, `categorias.php`, etc.)
+- Formulario de alta (`*_nuevo.php`)
+- Acción de guardado (`*_guardar.php`)
+- Formulario de edición (`*_editar.php`)
+- Acción de actualización (`*_actualizar.php`)
 
 ## Notas
 

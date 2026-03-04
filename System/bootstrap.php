@@ -37,8 +37,9 @@ if ($appConfig['app_debug']) {
 // Cargar funciones auxiliares
 require_once __DIR__ . '/helpers/functions.php';
 
-// Cargar clase de base de datos
+// Cargar clases principales
 require_once __DIR__ . '/core/Database.php';
+require_once __DIR__ . '/core/Auth.php';
 
 // Definir constantes del sistema
 define('APP_NAME', $appConfig['app_name']);
