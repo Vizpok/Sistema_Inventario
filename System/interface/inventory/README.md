@@ -2,21 +2,21 @@
 
 Módulo de inventario.
 
-## Debe incluir
+## Estado
 
-- `inventario.php`
-- Usuarios:
-	- `usuarios.php`
-	- `usuario_nuevo.php`
-	- `usuario_guardar.php`
-	- `usuario_editar.php`
-	- `usuario_actualizar.php`
-- Clientes:
-	- `clientes.php`
-	- `cliente_nuevo.php`
-	- `cliente_guardar.php`
-	- `cliente_editar.php`
-	- `cliente_actualizar.php`
+Este módulo está **pendiente de implementación**. Actualmente solo existe esta guía.
+
+## Alcance previsto
+
+- Consulta de inventario general
+- Gestión de usuarios
+- Gestión de clientes
+
+## Sugerencia de archivos al implementarlo
+
+- Vista principal (`inventario.php`)
+- Listado por entidad (`usuarios.php`, `clientes.php`)
+- Formularios y acciones CRUD (`*_nuevo.php`, `*_guardar.php`, `*_editar.php`, `*_actualizar.php`)
 
 ## Notas
 

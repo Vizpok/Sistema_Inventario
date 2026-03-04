@@ -2,16 +2,20 @@
 
 Módulo de movimientos.
 
-## Debe incluir
+## Estado
 
-- Movimientos:
-	- `movimientos.php`
-	- `movimiento_nuevo.php`
-	- `movimiento_procesar.php`
-- Ventas:
-	- `ventas.php`
-	- `venta_nueva.php`
-	- `venta_procesar.php`
+Este módulo está **pendiente de implementación**. Actualmente solo existe esta guía.
+
+## Alcance previsto
+
+- Registro de movimientos internos (entradas, salidas, ajustes)
+- Flujo de ventas y salida de stock
+- Historial y trazabilidad de operaciones
+
+## Sugerencia de archivos al implementarlo
+
+- `movimientos.php`, `movimiento_nuevo.php`, `movimiento_procesar.php`
+- `ventas.php`, `venta_nueva.php`, `venta_procesar.php`
 
 ## Notas
 

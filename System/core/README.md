@@ -23,45 +23,69 @@ Clase para manejo de conexión a la base de datos MySQL.
 
 **Ejemplo de uso:**
 ```php
-// Obtener instancia (via bootstrap.php)
 $db = db();
-
-// SELECT
 $productos = $db->select("SELECT * FROM productos WHERE activo = 1");
-foreach ($productos as $producto) {
-    echo $producto['nombre'];
-}
-
-// INSERT
-$nombre = $db->escape($_POST['nombre']);
-$db->execute("INSERT INTO productos (nombre) VALUES ('$nombre')");
-$nuevo_id = $db->lastInsertId();
-
-// UPDATE
-$db->execute("UPDATE productos SET precio = 100 WHERE id = 5");
-
-// DELETE
-$db->execute("DELETE FROM productos WHERE id = 10");
-
-// Conexión raw (para casos avanzados)
-$conn = $db->getConnection();
-$stmt = $conn->prepare("SELECT * FROM productos WHERE id = ?");
+$db->execute("INSERT INTO productos (nombre) VALUES ('...')");
 ```
 
-## Futuras clases
+### Auth.php
+Clase de autenticación y gestión de sesiones.
 
-Esta carpeta puede contener:
-- `Auth.php` - Autenticación de usuarios
-- `Session.php` - Manejo avanzado de sesiones
-- `Router.php` - Sistema de rutas
-- `Request.php` - Manejo de peticiones HTTP
-- `Response.php` - Manejo de respuestas HTTP
-- `Validator.php` - Validación de datos
-- `Model.php` - Clase base para modelos
+**Métodos estáticos:**
+- `authenticate($usuario, $contrasena)` - Valida credenciales, retorna array con datos del usuario o false
+- `login($user_id, $nombre, $rol)` - Crea sesión del usuario autenticado
+- `isAuthenticated()` - Verifica si hay sesión activa (bool)
+- `getCurrentUser()` - Obtiene datos del usuario actual (array o null)
+- `logout()` - Destruye la sesión
+- `hasRole($rol)` - Valida si el usuario tiene un rol específico (bool)
 
-## Convenciones
+**Modo de autenticación actual:**
 
-- Una clase por archivo
-- Nombres en PascalCase
-- Documentación PHPDoc en todos los métodos públicos
-- Manejo de errores con try-catch
+- El método `authenticate()` valida usuarios directamente contra la tabla `usuarios` en la base de datos.
+- Acepta login por correo completo, nombre y parte local del correo (antes de `@`).
+- Filtra únicamente usuarios activos (`ACTIVO = 1`).
+
+**Datos necesarios en BD:**
+- `ID_USUARIO`
+- `NOMBRE`
+- `EMAIL`
+- `PASSWORD_USUARIO`
+- `ROL`
+- `ACTIVO`
+
+**Ejemplo de uso:**
+```php
+require_once 'System/core/Auth.php';
+
+// Autenticar usuario
+$user = Auth::authenticate($usuario, $contrasena);
+if ($user) {
+    Auth::login($user['id'], $user['nombre'], $user['rol']);
+}
+
+// Verificar autenticación
+if (Auth::isAuthenticated()) {
+    $user = Auth::getCurrentUser();
+    echo $user['nombre'];
+}
+
+// Validar rol
+if (Auth::hasRole('ADMIN')) {
+    // Usuario es admin
+}
+
+// Logout
+Auth::logout();
+```
+
+**Variables de sesión creadas:**
+```php
+$_SESSION['user_id']         // ID del usuario
+$_SESSION['user_nombre']     // Nombre del usuario
+$_SESSION['user_rol']        // Rol (ADMIN, OPERADOR, etc)
+$_SESSION['user_login_time'] // Timestamp del login
+```
+
+**Notas:**
+- Las contraseñas están sin hash en el estado actual del proyecto (solo desarrollo).
+- Para producción, migrar a `password_hash()` y `password_verify()`.

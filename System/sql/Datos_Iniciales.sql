@@ -16,14 +16,34 @@ SET time_zone = "+00:00";
 --
 
 -- --------------------------------------------------------
+-- Limpieza previa (para poder re-ejecutar este script)
+-- --------------------------------------------------------
+SET FOREIGN_KEY_CHECKS = 0;
+
+DELETE FROM `detalle_orden`;
+DELETE FROM `ordenes_venta`;
+DELETE FROM `movimientos`;
+DELETE FROM `inventario`;
+DELETE FROM `lotes`;
+DELETE FROM `ubicaciones`;
+DELETE FROM `productos`;
+DELETE FROM `categorias`;
+DELETE FROM `proveedores`;
+DELETE FROM `clientes`;
+DELETE FROM `usuarios`;
+
+SET FOREIGN_KEY_CHECKS = 1;
+
+-- --------------------------------------------------------
 -- Insertar datos en la tabla `usuarios`
 -- --------------------------------------------------------
+-- NOTA: Contraseñas en texto plano solo para desarrollo local.
 INSERT INTO `usuarios` (`ID_USUARIO`, `NOMBRE`, `EMAIL`, `PASSWORD_USUARIO`, `ROL`, `ACTIVO`) VALUES
-(1, 'Administrador Sistema', 'admin@inventario.com', '$2y$10$abcdefghijklmnopqrstuvwxyz1234567890', 'ADMINISTRADOR', 1),
-(2, 'Juan García López', 'juan.garcia@inventario.com', '$2y$10$abcdefghijklmnopqrstuvwxyz1234567890', 'GERENTE', 1),
-(3, 'María Rodríguez Pérez', 'maria.rodriguez@inventario.com', '$2y$10$abcdefghijklmnopqrstuvwxyz1234567890', 'OPERADOR', 1),
-(4, 'Carlos Mendez Silva', 'carlos.mendez@inventario.com', '$2y$10$abcdefghijklmnopqrstuvwxyz1234567890', 'OPERADOR', 1),
-(5, 'Laura Jiménez Ruiz', 'laura.jimenez@inventario.com', '$2y$10$abcdefghijklmnopqrstuvwxyz1234567890', 'SUPERVISOR', 1);
+(1, 'Administrador Sistema', 'admin@inventario.com', 'ADMIN', 'ADMINISTRADOR', 1),
+(2, 'Juan García López', 'juan.garcia@inventario.com', 'gerente123', 'GERENTE', 1),
+(3, 'María Rodríguez Pérez', 'maria.rodriguez@inventario.com', 'operador123', 'OPERADOR', 1),
+(4, 'Carlos Mendez Silva', 'carlos.mendez@inventario.com', 'operador456', 'OPERADOR', 1),
+(5, 'Laura Jiménez Ruiz', 'laura.jimenez@inventario.com', 'supervisor123', 'SUPERVISOR', 1);
 
 -- --------------------------------------------------------
 -- Insertar datos en la tabla `categorias`
