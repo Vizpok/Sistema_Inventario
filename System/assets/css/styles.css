@@ -89,6 +89,10 @@ body {
     position: relative;
 }
 
+.sidebar-menu li a:hover {
+    background-color: var(--sidebar-hover);
+}
+
 .sidebar.collapsed .sidebar-menu li a {
     padding: 12px;
     justify-content: center;
@@ -109,16 +113,30 @@ body {
     display: none;
 }
 
-.sidebar-menu li a:hover {
-    background-color: var(--sidebar-hover);
+.sidebar.collapsed .sidebar-menu .menu-item-with-submenu > a .chevron-icon {
+    display: none;
 }
-
 
 .sidebar-menu li a.active {
     background-color: var(--sidebar-active-bg);
     color: var(--sidebar-active-text);
-    border-radius: 4px 0 0 4px;
-    margin-left: 10px;
+    border-radius: 0;
+    margin-left: 0;
+}
+
+/* Elementos principales activos: hover con más contraste */
+.sidebar-menu li a.active:hover {
+    background-color: var(--sidebar-active-bg);
+    opacity: 0.85;
+    box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.2);
+    border-radius: 0;
+    margin-left: 0;
+}
+
+/* Catálogo cuando está activo */
+.sidebar-menu .menu-toggle.active {
+    background-color: var(--sidebar-active-bg);
+    color: var(--sidebar-active-text);
 }
 
 /* Menú desplegable - Submenu */
@@ -205,10 +223,18 @@ body {
     color: #0b1e36;
 }
 
-/* Catálogo: activo ligeramente más claro */
+/* Catálogo: mismo diseño que los elementos principales */
 .sidebar-menu .submenu li a.nav-catalog-item.active {
-    background-color: rgba(255, 255, 255, 0.10);
-    color: rgba(255, 255, 255, 0.95);
+    background-color: var(--sidebar-hover);
+    color: var(--text-light);
+}
+
+/* Catálogo: hover sobre elemento activo */
+.sidebar-menu .submenu li a.nav-catalog-item.active:hover {
+    background-color: var(--sidebar-hover);
+    color: var(--text-light);
+    opacity: 0.85;
+    box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.2);
 }
 
 .sidebar-menu .submenu li a.active:before {

@@ -62,7 +62,7 @@
                 </li>
 
                 <li class="menu-item-with-submenu" id="catalogMenu">
-                    <a href="javascript:void(0);" class="menu-toggle" role="button">
+                    <a href="javascript:void(0);" class="menu-toggle <?= $is_catalog ? 'active' : ''; ?>" role="button">
                         <i class="bi bi-journal-text"></i>
                         <span>Catálogo</span>
                         <i class="bi bi-chevron-down chevron-icon"></i>

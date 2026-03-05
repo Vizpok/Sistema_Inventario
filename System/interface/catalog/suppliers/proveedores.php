@@ -37,12 +37,9 @@ $proveedores = db()->select("
         p.ID_PROVEEDOR,
         p.NOMBRE,
         p.RFC,
-        p.CONTACTO,
-        COUNT(DISTINCT l.ID_LOTE) as TOTAL_LOTES
+        p.CONTACTO
     FROM proveedores p
-    LEFT JOIN lotes l ON p.ID_PROVEEDOR = l.ID_PROVEEDOR
     $where
-    GROUP BY p.ID_PROVEEDOR
     ORDER BY p.NOMBRE ASC
     LIMIT $offset, $per_page
 ");
@@ -372,7 +369,6 @@ include __DIR__ . '/../../layouts/header.php';
                     <th>Nombre</th>
                     <th>RFC</th>
                     <th>Contacto</th>
-                    <th>Lotes Registrados</th>
                     <th>Acciones</th>
                 </tr>
             </thead>
@@ -382,7 +378,6 @@ include __DIR__ . '/../../layouts/header.php';
                     <td><strong><?= $proveedor['NOMBRE'] ?></strong></td>
                     <td><span class="rfc-badge"><?= $proveedor['RFC'] ?? '-' ?></span></td>
                     <td><?= $proveedor['CONTACTO'] ?? '-' ?></td>
-                    <td><?= number_format($proveedor['TOTAL_LOTES']) ?></td>
                     <td>
                         <a href="proveedores_editar.php?id=<?= $proveedor['ID_PROVEEDOR'] ?>" class="btn-action btn-edit">
                             <i class="bi bi-pencil"></i> Editar

@@ -38,38 +38,42 @@
         }
     }
 
-    // Toggle Catálogo submenu (compatibilidad Edge/Chrome)
+    // Toggle Catálogo submenu 
     const catalogMenu = document.getElementById('catalogMenu');
     const catalogMenuToggle = catalogMenu ? catalogMenu.querySelector('.menu-toggle') : null;
     const catalogSubmenu = document.getElementById('catalogSubmenu');
 
     if (catalogMenu && catalogMenuToggle) {
+        // Restaurar estado del desplegable desde localStorage
+        const catalogMenuWasOpen = localStorage.getItem('catalogMenuOpen') === 'true';
+        
         // Detectar si estamos en una página del catálogo
         const isInCatalogPage = catalogSubmenu && catalogSubmenu.querySelector('a.active') !== null;
 
-        if (isInCatalogPage) {
-            // En catálogo: mantener abierto
+        if (isInCatalogPage || catalogMenuWasOpen) {
+            // En catálogo o si estaba abierto antes: mantener abierto
             catalogMenu.classList.add('open');
             localStorage.setItem('catalogMenuOpen', 'true');
         } else {
-            // Fuera de catálogo: cerrar automático
+            // Fuera de catálogo y no estaba abierto: cerrar
             catalogMenu.classList.remove('open');
             localStorage.setItem('catalogMenuOpen', 'false');
         }
 
-        // Toggle manual siempre disponible
+        // Toggle al hacer click en cualquier parte del toggleador
         catalogMenuToggle.addEventListener('click', function(e) {
             e.preventDefault();
-
-            // Si el sidebar está colapsado, expandir primero
-            if (sidebar && sidebar.classList.contains('collapsed')) {
-                sidebar.classList.remove('collapsed');
-                localStorage.setItem('sidebarCollapsed', 'false');
-            }
+            e.stopPropagation();
 
             catalogMenu.classList.toggle('open');
             const isOpen = catalogMenu.classList.contains('open');
             localStorage.setItem('catalogMenuOpen', isOpen ? 'true' : 'false');
+
+            // Si el sidebar está colapsado y abrimos el menú, expandir el sidebar
+            if (isOpen && sidebar && sidebar.classList.contains('collapsed')) {
+                sidebar.classList.remove('collapsed');
+                localStorage.setItem('sidebarCollapsed', 'false');
+            }
         });
     }
 

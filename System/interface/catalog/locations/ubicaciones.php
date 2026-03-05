@@ -38,13 +38,9 @@ $ubicaciones = db()->select("
         u.PASILLO,
         u.ESTANTE,
         u.NIVEL,
-        u.CODIGO_UBICACION,
-        COUNT(DISTINCT i.ID_INVENTARIO) as TOTAL_ITEMS,
-        COALESCE(SUM(i.CANTIDAD_TOTAL), 0) as CANTIDAD_TOTAL
+        u.CODIGO_UBICACION
     FROM ubicaciones u
-    LEFT JOIN inventario i ON u.ID_UBICACION = i.ID_UBICACION
     $where
-    GROUP BY u.ID_UBICACION
     ORDER BY u.PASILLO ASC, u.ESTANTE ASC, u.NIVEL ASC
     LIMIT $offset, $per_page
 ");
@@ -404,8 +400,6 @@ include __DIR__ . '/../../layouts/header.php';
                 <tr>
                     <th>Código</th>
                     <th>Ubicación</th>
-                    <th>Items</th>
-                    <th>Cantidad Total</th>
                     <th>Acciones</th>
                 </tr>
             </thead>
@@ -429,8 +423,6 @@ include __DIR__ . '/../../layouts/header.php';
                             </div>
                         </div>
                     </td>
-                    <td><?= number_format($ubicacion['TOTAL_ITEMS']) ?></td>
-                    <td><?= number_format($ubicacion['CANTIDAD_TOTAL']) ?> unidades</td>
                     <td>
                         <a href="ubicaciones_editar.php?id=<?= $ubicacion['ID_UBICACION'] ?>" class="btn-action btn-edit">
                             <i class="bi bi-pencil"></i> Editar

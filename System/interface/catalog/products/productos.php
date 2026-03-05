@@ -38,15 +38,11 @@ $productos = db()->select("
         p.SKU,
         p.CODIGO_BARRAS,
         p.NOMBRE,
-        p.PRECIO,
         p.STOCK_MINIMO,
-        c.NOMBRE as CATEGORIA,
-        COALESCE(SUM(i.CANTIDAD_DISPONIBLE), 0) as STOCK_DISPONIBLE
+        c.NOMBRE as CATEGORIA
     FROM productos p
     LEFT JOIN categorias c ON p.ID_CATEGORIA = c.ID_CATEGORIA
-    LEFT JOIN inventario i ON p.ID_PRODUCTO = i.ID_PRODUCTO
     $where
-    GROUP BY p.ID_PRODUCTO
     ORDER BY p.NOMBRE ASC
     LIMIT $offset, $per_page
 ");
@@ -394,8 +390,6 @@ include __DIR__ . '/../../layouts/header.php';
                     <th>Código de Barras</th>
                     <th>Nombre</th>
                     <th>Categoría</th>
-                    <th>Precio</th>
-                    <th>Stock Disponible</th>
                     <th>Stock Mínimo</th>
                     <th>Acciones</th>
                 </tr>
@@ -407,12 +401,6 @@ include __DIR__ . '/../../layouts/header.php';
                     <td><?= $producto['CODIGO_BARRAS'] ?? '-' ?></td>
                     <td><strong><?= $producto['NOMBRE'] ?></strong></td>
                     <td><?= $producto['CATEGORIA'] ?? '-' ?></td>
-                    <td class="precio-cell"><?= formatMoney($producto['PRECIO']) ?></td>
-                    <td>
-                        <span class="stock-cell <?= ($producto['STOCK_DISPONIBLE'] < $producto['STOCK_MINIMO']) ? 'stock-bajo' : 'stock-normal' ?>">
-                            <?= number_format($producto['STOCK_DISPONIBLE']) ?>
-                        </span>
-                    </td>
                     <td><?= number_format($producto['STOCK_MINIMO']) ?></td>
                     <td>
                         <a href="productos_editar.php?id=<?= $producto['ID_PRODUCTO'] ?>" class="btn-action btn-edit">

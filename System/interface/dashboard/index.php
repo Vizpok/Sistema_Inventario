@@ -410,16 +410,7 @@ include __DIR__ . '/../layouts/header.php';
     <section style="margin-top: 40px;">
         <h2 style="margin-bottom: 24px; font-size: 18px; font-weight: 600; color: #0b1e36;">Accesos Rápidos</h2>
         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px;">
-            <a href="<?= $base_url ?>/inventario.php" class="btn btn-primary" style="display: flex; align-items: center; justify-content: center; padding: 16px; border-radius: 10px; border: none; background: linear-gradient(135deg, #0b1e36, #1a3a52); color: white; text-decoration: none; font-weight: 600; transition: all 0.3s ease; box-shadow: 0 2px 8px rgba(11, 30, 54, 0.15);">
-                <i class="bi bi-box-seam" style="margin-right: 8px; font-size: 18px;"></i> Ver Inventario
-            </a>
-            <a href="<?= $base_url ?>/recepcion.php" class="btn btn-success" style="display: flex; align-items: center; justify-content: center; padding: 16px; border-radius: 10px; border: none; background: linear-gradient(135deg, #28a745, #20c997); color: white; text-decoration: none; font-weight: 600; transition: all 0.3s ease; box-shadow: 0 2px 8px rgba(40, 167, 69, 0.15);">
-                <i class="bi bi-box-arrow-in-down" style="margin-right: 8px; font-size: 18px;"></i> Nueva Recepción
-            </a>
-            <a href="<?= $base_url ?>/movimientos.php" class="btn btn-warning" style="display: flex; align-items: center; justify-content: center; padding: 16px; border-radius: 10px; border: none; background: linear-gradient(135deg, #ffc107, #fd7e14); color: white; text-decoration: none; font-weight: 600; transition: all 0.3s ease; box-shadow: 0 2px 8px rgba(255, 193, 7, 0.15);">
-                <i class="bi bi-arrow-left-right" style="margin-right: 8px; font-size: 18px;"></i> Ver Movimientos
-            </a>
-            <a href="<?= $base_url ?>/catalogo.php" class="btn btn-primary" style="display: flex; align-items: center; justify-content: center; padding: 16px; border-radius: 10px; border: none; background: linear-gradient(135deg, #6f42c1, #7c3aed); color: white; text-decoration: none; font-weight: 600; transition: all 0.3s ease; box-shadow: 0 2px 8px rgba(111, 66, 193, 0.15);">
+            <a href="<?= $base_url ?>/System/interface/catalog/index.php" class="btn btn-primary" style="display: flex; align-items: center; justify-content: center; padding: 16px; border-radius: 10px; border: none; background: linear-gradient(135deg, #6f42c1, #7c3aed); color: white; text-decoration: none; font-weight: 600; transition: all 0.3s ease; box-shadow: 0 2px 8px rgba(111, 66, 193, 0.15);">
                 <i class="bi bi-journal-text" style="margin-right: 8px; font-size: 18px;"></i> Administrar Catálogo
             </a>
         </div>
