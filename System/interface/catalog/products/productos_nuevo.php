@@ -223,6 +223,7 @@ include __DIR__ . '/../../layouts/header.php';
                             name="codigo_barras" 
                             placeholder="Ej: 7501234567890"
                             maxlength="50"
+                            value="<?= isset($_GET['codigo_barras']) ? htmlspecialchars($_GET['codigo_barras']) : '' ?>"
                         >
                         <div class="form-help">Código de barras del producto (opcional)</div>
                     </div>

@@ -41,7 +41,7 @@
                 </li>
 
                 <li>
-                    <a href="<?= $base_url ?? '/Sistema_Inventario' ?>/System/interface/inventory/" class="<?= $is_inventory ? 'active' : ''; ?>">
+                    <a href="<?= $base_url ?? '/Sistema_Inventario' ?>/System/interface/catalog/inventory/inventario.php" class="<?= $is_inventory ? 'active' : ''; ?>">
                         <i class="bi bi-box-seam-fill"></i>
                         <span>Inventario</span>
                     </a>
