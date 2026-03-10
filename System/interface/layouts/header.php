@@ -55,7 +55,7 @@
                 </li>
 
                 <li>
-                    <a href="<?= $base_url ?? '/Sistema_Inventario' ?>/System/interface/movements/" class="<?= $is_movements ? 'active' : ''; ?>">
+                    <a href="<?= $base_url ?? '/Sistema_Inventario' ?>/System/interface/movements/movimientos.php/" class="<?= $is_movements ? 'active' : ''; ?>">
                         <i class="bi bi-arrow-left-right"></i>
                         <span>Movimientos</span>
                     </a>
