@@ -108,7 +108,7 @@
             
             <header class="top-header">
                                 <button class="sidebar-toggle" title="Alternar sidebar">
-                                    <i class="bi bi-list"></i>
+                                    <i class="bi bi-box-seam"></i>
                                 </button>
                 <div class="user-info">
                     <i class="bi bi-person-circle me-2"></i> 
