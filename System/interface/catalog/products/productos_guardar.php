@@ -27,6 +27,8 @@ $nombre = isset($_POST['nombre']) ? sanitize($_POST['nombre']) : '';
 $id_categoria = isset($_POST['id_categoria']) ? (int)$_POST['id_categoria'] : 0;
 $precio = isset($_POST['precio']) ? (float)$_POST['precio'] : 0;
 $stock_minimo = isset($_POST['stock_minimo']) ? (int)$_POST['stock_minimo'] : 10;
+$cantidad_disponible = isset($_POST['cantidad_disponible']) ? (int)$_POST['cantidad_disponible'] : 0;
+$id_ubicacion = isset($_POST['id_ubicacion']) ? (int)$_POST['id_ubicacion'] : 1;
 
 // Validaciones
 $errores = [];
@@ -78,6 +80,10 @@ $query = "
 
 if (db()->execute($query)) {
     $id_producto = db()->lastInsertId();
+    // Guardar en inventario
+    $id_lote = 1;
+    $cantidad_total = $cantidad_disponible;
+    db()->execute("INSERT INTO inventario (ID_PRODUCTO, ID_LOTE, ID_UBICACION, CANTIDAD_TOTAL, CANTIDAD_RESERVADA) VALUES ($id_producto, $id_lote, $id_ubicacion, $cantidad_total, 0)");
     showAlert('Producto creado exitosamente. ID: ' . $id_producto, 'success');
     redirect('productos.php');
 } else {

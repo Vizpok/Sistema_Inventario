@@ -41,7 +41,7 @@
                 </li>
 
                 <li>
-                    <a href="<?= $base_url ?? '/Sistema_Inventario' ?>/System/interface/inventory/" class="<?= $is_inventory ? 'active' : ''; ?>">
+                    <a href="<?= $base_url ?? '/Sistema_Inventario' ?>/System/interface/catalog/inventory/inventario.php" class="<?= $is_inventory ? 'active' : ''; ?>">
                         <i class="bi bi-box-seam-fill"></i>
                         <span>Inventario</span>
                     </a>
@@ -108,7 +108,7 @@
             
             <header class="top-header">
                                 <button class="sidebar-toggle" title="Alternar sidebar">
-                                    <i class="bi bi-list"></i>
+                                    <i class="bi bi-box-seam"></i>
                                 </button>
                 <div class="user-info">
                     <i class="bi bi-person-circle me-2"></i> 

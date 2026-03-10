@@ -355,11 +355,6 @@ include __DIR__ . '/../../layouts/header.php';
                     <div class="card-label">Código Prefijo</div>
                     <div class="card-value" style="color: #0b5ed7;"><?= $categoria['CODIGO_PREFIJO'] ?></div>
                 </div>
-                
-                <div>
-                    <div class="card-label">Productos</div>
-                    <div class="card-value"><?= number_format($categoria['TOTAL_PRODUCTOS']) ?></div>
-                </div>
             </div>
 
             <div class="card-footer">
@@ -390,3 +385,5 @@ include __DIR__ . '/../../layouts/header.php';
 </div>
 
 <?php include __DIR__ . '/../../layouts/footer.php'; ?>
+
+                    // ...existing code...
