@@ -86,6 +86,7 @@ include __DIR__ . '/../../layouts/header.php';
 <?php include __DIR__ . '/../../layouts/footer.php'; ?>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/quagga/0.12.1/quagga.min.js"></script>
 <script>
+var csrfTokenPHP = "<?= generateCsrfToken() ?>";
 (function() {
     var scannerRunning = false;
 
@@ -242,7 +243,7 @@ include __DIR__ . '/../../layouts/header.php';
                 '<label style="display:block; font-weight:600; margin-bottom:8px;">Cantidad Disponible <span style="color:#dc3545;">*</span></label>' +
                 '<input type="number" name="cantidad_disponible" min="1" value="1" required style="width:100%; padding:10px; border-radius:8px; border:1px solid #e0e0e0;">' +
             '</div>' +
-            '<input type="hidden" name="csrf_token" value="<?= generateCsrfToken() ?>">' +
+            '<input type="hidden" name="csrf_token" value="' + csrfTokenPHP + '">' +
             '<button type="submit" class="btn-primary" style="width:100%;"><i class="bi bi-check-circle"></i> Registrar Producto</button>' +
         '</form>';
 
