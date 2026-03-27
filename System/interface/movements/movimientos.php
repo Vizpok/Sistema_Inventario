@@ -24,12 +24,16 @@ $offset = ($page - 1) * $per_page;
 $where = '';
 if ($search) {
     $search_escaped = db()->escape($search);
-    $where = " WHERE p.NOMBRE LIKE '%$search_escaped%' OR p.SKU LIKE '%$search_escaped%' OR p.CODIGO_BARRAS LIKE '%$search_escaped%'";
+    $where = " WHERE (
+        p.NOMBRE LIKE '%$search_escaped%' OR
+        p.SKU LIKE '%$search_escaped%' OR
+        p.CODIGO_BARRAS LIKE '%$search_escaped%'
+    )";
 }
 
 if ($type_filter) {
     $type_escaped = db()->escape($type_filter);
-    $where .= " AND m.TIPO_MOVIMIENTO = '$type_escaped'";
+    $where .= ($where ? " AND " : " WHERE ") . "m.TIPO_MOVIMIENTO = '$type_escaped'";
 }
 
 // Obtener total de movimientos
@@ -37,7 +41,7 @@ $count_query = db()->select("
     SELECT COUNT(DISTINCT m.ID_MOVIMIENTO) as total 
     FROM movimientos m
     INNER JOIN productos p ON m.ID_PRODUCTO = p.ID_PRODUCTO
-    WHERE 1=1 $where
+    $where
 ");
 $total = $count_query[0]['total'] ?? 0;
 $total_pages = ceil($total / $per_page);
@@ -63,7 +67,7 @@ $movimientos = db()->select("
     INNER JOIN usuarios u ON m.ID_USUARIO = u.ID_USUARIO
     LEFT JOIN ubicaciones u_o ON m.ID_UBICACION_ORIGEN = u_o.ID_UBICACION
     LEFT JOIN ubicaciones u_d ON m.ID_UBICACION_DESTINO = u_d.ID_UBICACION
-    WHERE 1=1 $where
+    $where
     ORDER BY m.FECHA DESC
     LIMIT $offset, $per_page
 ");
@@ -78,10 +82,10 @@ include __DIR__ . '/./../layouts/header.php';
             <p class="page-subtitle">Visualiza el registro de todas las transacciones internas, transferencias y salidas</p>
         </div>
         <div class="page-header-actions">
-            <a href="movimiento_nuevo.php" class="btn-primary">
+            <a href="<?= $base_url ?>/System/interface/movements/movimiento_nuevo.php" class="btn-primary">
                 <i class="bi bi-plus-lg"></i> Nueva Transferencia
             </a>
-            <a href="venta_nueva.php" class="btn-primary">
+            <a href="<?= $base_url ?>/System/interface/movements/venta_nueva.php" class="btn-primary">
                 <i class="bi bi-bag-check"></i> Nueva Salida
             </a>
         </div>
