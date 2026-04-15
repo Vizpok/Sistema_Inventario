@@ -276,19 +276,36 @@ include __DIR__ . '/../../layouts/header.php';
             <div class="form-section">
                 <h3 class="form-section-title">Información de Stock</h3>
 
-                <div class="form-group">
-                    <label for="stock_minimo">Stock Mínimo <span class="required">*</span></label>
-                    <input 
-                        type="number" 
-                        id="stock_minimo" 
-                        name="stock_minimo" 
-                        required
-                        min="1"
-                        value="10"
-                        placeholder="10"
-                    >
-                    <div class="form-help">Cantidad mínima antes de generar una alerta de reorden</div>
-                    <div class="error-message">El stock mínimo es requerido y debe ser mayor a 0</div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="cantidad_disponible">Cantidad Inicial <span class="required">*</span></label>
+                        <input 
+                            type="number" 
+                            id="cantidad_disponible" 
+                            name="cantidad_disponible" 
+                            required
+                            min="0"
+                            value="0"
+                            placeholder="0"
+                        >
+                        <div class="form-help">Cantidad inicial de producto a agregar al inventario</div>
+                        <div class="error-message">La cantidad inicial es requerida</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="stock_minimo">Stock Mínimo <span class="required">*</span></label>
+                        <input 
+                            type="number" 
+                            id="stock_minimo" 
+                            name="stock_minimo" 
+                            required
+                            min="1"
+                            value="10"
+                            placeholder="10"
+                        >
+                        <div class="form-help">Cantidad mínima antes de generar una alerta de reorden</div>
+                        <div class="error-message">El stock mínimo es requerido y debe ser mayor a 0</div>
+                    </div>
                 </div>
             </div>
 
@@ -312,6 +329,7 @@ include __DIR__ . '/../../layouts/header.php';
             const nombre = document.getElementById('nombre').value.trim();
             const categoria = document.getElementById('categoria').value;
             const precio = document.getElementById('precio').value;
+            const cantidadDisponible = document.getElementById('cantidad_disponible').value;
             const stockMinimo = document.getElementById('stock_minimo').value;
 
             // Limpiar errores previos
@@ -340,6 +358,12 @@ include __DIR__ . '/../../layouts/header.php';
             // Validar precio
             if (!precio || parseFloat(precio) <= 0) {
                 document.getElementById('precio').parentElement.classList.add('error');
+                isValid = false;
+            }
+
+            // Validar cantidad inicial
+            if (cantidadDisponible === '' || parseInt(cantidadDisponible) < 0) {
+                document.getElementById('cantidad_disponible').parentElement.classList.add('error');
                 isValid = false;
             }
 

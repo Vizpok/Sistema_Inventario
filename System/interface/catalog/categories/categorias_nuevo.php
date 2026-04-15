@@ -126,11 +126,17 @@ include __DIR__ . '/../../layouts/header.php';
             background: #dee2e6;
         }
 
-        .form-help {
-            font-size: 12px;
-            color: #6c757d;
-            margin-top: 6px;
+        .form-group.error input,
+        .form-group.error select {
+            border-color: #dc3545;
+            background: #fff5f5;
         }
+
+        .form-group.error .error-message {
+            display: block;
+        }
+
+        .error-message {
 
         @media (max-width: 768px) {
             .form-container {
@@ -163,6 +169,7 @@ include __DIR__ . '/../../layouts/header.php';
                     maxlength="50"
                 >
                 <div class="form-help">Nombre descriptivo de la categoría</div>
+                <div class="error-message">El nombre de la categoría es requerido</div>
             </div>
 
             <div class="form-group">
@@ -177,6 +184,7 @@ include __DIR__ . '/../../layouts/header.php';
                     style="text-transform: uppercase;"
                 >
                 <div class="form-help">Prefijo utilizado para generar SKUs de productos (ej: HM-001, HM-002)</div>
+                <div class="error-message">El código prefijo es requerido</div>
             </div>
 
             <div class="form-actions">
@@ -194,6 +202,34 @@ include __DIR__ . '/../../layouts/header.php';
         // Convertir a mayúsculas automáticamente
         document.getElementById('codigo_prefijo').addEventListener('input', function() {
             this.value = this.value.toUpperCase();
+        });
+
+        // Validación del formulario
+        document.getElementById('formCategoria').addEventListener('submit', function(e) {
+            let isValid = true;
+            const nombre = document.getElementById('nombre').value.trim();
+            const codigoPrefijo = document.getElementById('codigo_prefijo').value.trim();
+
+            // Limpiar errores previos
+            document.querySelectorAll('.form-group.error').forEach(el => {
+                el.classList.remove('error');
+            });
+
+            // Validar nombre
+            if (!nombre) {
+                document.getElementById('nombre').parentElement.classList.add('error');
+                isValid = false;
+            }
+
+            // Validar código prefijo
+            if (!codigoPrefijo) {
+                document.getElementById('codigo_prefijo').parentElement.classList.add('error');
+                isValid = false;
+            }
+
+            if (!isValid) {
+                e.preventDefault();
+            }
         });
     </script>
 

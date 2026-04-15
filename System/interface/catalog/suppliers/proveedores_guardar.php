@@ -38,6 +38,14 @@ if (count($nombre_exist) > 0) {
     $errores[] = 'Ya existe un proveedor con este nombre';
 }
 
+// Verificar que el RFC sea único (si se proporciona)
+if (!empty($rfc)) {
+    $rfc_exist = db()->select("SELECT ID_PROVEEDOR FROM proveedores WHERE RFC = '" . db()->escape($rfc) . "' LIMIT 1");
+    if (count($rfc_exist) > 0) {
+        $errores[] = 'Ya existe un proveedor con este RFC';
+    }
+}
+
 // Si hay errores, redirigir con mensaje
 if (count($errores) > 0) {
     showAlert(implode('. ', $errores), 'error');

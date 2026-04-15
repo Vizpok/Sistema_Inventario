@@ -20,7 +20,7 @@ $search = isset($_GET['search']) ? sanitize($_GET['search']) : '';
 $where = '';
 if ($search) {
     $search_escaped = db()->escape($search);
-    $where = " WHERE NOMBRE LIKE '%$search_escaped%' OR CODIGO_PREFIJO LIKE '%$search_escaped%'";
+    $where = " WHERE c.NOMBRE LIKE '%$search_escaped%' OR c.CODIGO_PREFIJO LIKE '%$search_escaped%'";
 }
 
 // Obtener categorías
@@ -33,7 +33,7 @@ $categorias = db()->select("
     FROM categorias c
     LEFT JOIN productos p ON c.ID_CATEGORIA = p.ID_CATEGORIA
     $where
-    GROUP BY c.ID_CATEGORIA
+    GROUP BY c.ID_CATEGORIA, c.NOMBRE, c.CODIGO_PREFIJO
     ORDER BY c.NOMBRE ASC
 ");
 
@@ -354,6 +354,10 @@ include __DIR__ . '/../../layouts/header.php';
                 <div style="margin-bottom: 16px;">
                     <div class="card-label">Código Prefijo</div>
                     <div class="card-value" style="color: #0b5ed7;"><?= $categoria['CODIGO_PREFIJO'] ?></div>
+                </div>
+                <div>
+                    <div class="card-label">Total de Productos</div>
+                    <div class="card-value"><?= number_format($categoria['TOTAL_PRODUCTOS']) ?></div>
                 </div>
             </div>
 

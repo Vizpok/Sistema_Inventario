@@ -27,7 +27,7 @@ if ($search) {
 }
 
 // Obtener total de ubicaciones
-$count_query = db()->select("SELECT COUNT(*) as total FROM ubicaciones $where");
+$count_query = db()->select("SELECT COUNT(*) as total FROM ubicaciones u $where");
 $total = $count_query[0]['total'] ?? 0;
 $total_pages = ceil($total / $per_page);
 

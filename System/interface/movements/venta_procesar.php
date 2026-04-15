@@ -79,7 +79,7 @@ if (count($errores) > 0) {
 }
 
 // ID del usuario actual
-$id_usuario = $_SESSION['ID_USUARIO'] ?? 0;
+$id_usuario = $_SESSION['user_id'] ?? 0;
 
 if ($id_usuario <= 0) {
     showAlert('Error de autenticación. Usuario no identificado.', 'error');

@@ -13,8 +13,14 @@ requireAuth();
 $page_title = 'Nueva Transferencia';
 $base_url = '/Sistema_Inventario';
 
-// Obtener productos y ubicaciones para los selects
-$productos = db()->select("SELECT ID_PRODUCTO, NOMBRE, SKU FROM productos ORDER BY NOMBRE ASC");
+// Obtener productos con inventario disponible y ubicaciones para los selects
+$productos = db()->select("
+    SELECT DISTINCT p.ID_PRODUCTO, p.NOMBRE, p.SKU 
+    FROM productos p
+    INNER JOIN inventario i ON p.ID_PRODUCTO = i.ID_PRODUCTO
+    WHERE (i.CANTIDAD_TOTAL - i.CANTIDAD_RESERVADA) > 0
+    ORDER BY p.NOMBRE ASC
+");
 $ubicaciones = db()->select("SELECT ID_UBICACION, CODIGO_UBICACION FROM ubicaciones ORDER BY CODIGO_UBICACION ASC");
 
 include __DIR__ . '/./../layouts/header.php';
@@ -313,10 +319,7 @@ include __DIR__ . '/./../layouts/header.php';
             }
 
             try {
-                const idProducto = this.value;
-                const url = '<?= $base_url ?>/System/interface/movements/api_lotes.php';
-                console.log('Haciendo fetch a:', url, 'con producto:', idProducto);
-                const response = await fetch(url, {
+                const response = await fetch('./api_lotes.php', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/x-www-form-urlencoded',
@@ -333,7 +336,7 @@ include __DIR__ . '/./../layouts/header.php';
                 const data = await response.json();
                 console.log('Data recibida:', data);
 
-                if (data.success && data.lotes.length > 0) {
+                if (data.success && data.lotes && data.lotes.length > 0) {
                     loteSelect.innerHTML = '<option value="">-- Selecciona un lote --</option>';
                     data.lotes.forEach(lote => {
                         const option = document.createElement('option');
@@ -343,7 +346,9 @@ include __DIR__ . '/./../layouts/header.php';
                     });
                     loteSelect.disabled = false;
                 } else {
-                    loteSelect.innerHTML = '<option value="">No hay lotes para este producto</option>';
+                    const error = data.error || 'No hay lotes para este producto';
+                    loteSelect.innerHTML = '<option value="">No hay lotes disponibles</option>';
+                    console.warn('Aviso:', error);
                 }
             } catch (error) {
                 console.error('Error cargando lotes:', error);
@@ -365,7 +370,7 @@ include __DIR__ . '/./../layouts/header.php';
             }
 
             try {
-                const response = await fetch('<?= $base_url ?>/System/interface/movements/api_ubicaciones.php', {
+                const response = await fetch('./api_ubicaciones.php', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/x-www-form-urlencoded',
@@ -373,13 +378,16 @@ include __DIR__ . '/./../layouts/header.php';
                     body: 'id_producto=' + encodeURIComponent(idProducto) + '&id_lote=' + encodeURIComponent(idLote)
                 });
 
+                console.log('Response status ubicaciones:', response.status);
+
                 if (!response.ok) {
                     throw new Error('Error en la respuesta del servidor: ' + response.statusText);
                 }
 
                 const data = await response.json();
+                console.log('Ubicaciones recibidas:', data);
 
-                if (data.success && data.ubicaciones.length > 0) {
+                if (data.success && data.ubicaciones && data.ubicaciones.length > 0) {
                     ubicacionOrigenSelect.innerHTML = '<option value="">-- Selecciona una ubicación --</option>';
                     data.ubicaciones.forEach(ub => {
                         const option = document.createElement('option');
@@ -390,7 +398,9 @@ include __DIR__ . '/./../layouts/header.php';
                     });
                     ubicacionOrigenSelect.disabled = false;
                 } else {
-                    ubicacionOrigenSelect.innerHTML = '<option value="">No hay ubicaciones con inventario</option>';
+                    const error = data.error || 'No hay ubicaciones con inventario';
+                    ubicacionOrigenSelect.innerHTML = '<option value="">No hay ubicaciones disponibles</option>';
+                    console.warn('Aviso:', error);
                 }
             } catch (error) {
                 console.error('Error cargando ubicaciones:', error);

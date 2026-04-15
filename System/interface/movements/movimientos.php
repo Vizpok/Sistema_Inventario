@@ -13,34 +13,39 @@ requireAuth();
 $page_title = 'Historial de Movimientos';
 $base_url = '/Sistema_Inventario';
 
-// Obtener parámetros de búsqueda, filtro y paginación
+// Obtener parámetros de búsqueda
 $search = isset($_GET['search']) ? sanitize($_GET['search']) : '';
-$type_filter = isset($_GET['type']) ? sanitize($_GET['type']) : '';
 $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
 $per_page = 20;
 $offset = ($page - 1) * $per_page;
 
-// Construir consulta
+// Construir consulta de búsqueda en 9 campos
 $where = '';
 if ($search) {
     $search_escaped = db()->escape($search);
     $where = " WHERE (
-        p.NOMBRE LIKE '%$search_escaped%' OR
-        p.SKU LIKE '%$search_escaped%' OR
-        p.CODIGO_BARRAS LIKE '%$search_escaped%'
+        m.TIPO_MOVIMIENTO LIKE '%$search_escaped%' OR
+        COALESCE(p.NOMBRE, '') LIKE '%$search_escaped%' OR
+        COALESCE(p.SKU, '') LIKE '%$search_escaped%' OR
+        COALESCE(l.CODIGO_LOTE, '') LIKE '%$search_escaped%' OR
+        m.CANTIDAD LIKE '%$search_escaped%' OR
+        COALESCE(u_o.CODIGO_UBICACION, '') LIKE '%$search_escaped%' OR
+        COALESCE(u_d.CODIGO_UBICACION, '') LIKE '%$search_escaped%' OR
+        COALESCE(u.NOMBRE, '') LIKE '%$search_escaped%' OR
+        DATE_FORMAT(m.FECHA, '%d/%m/%Y %H:%i') LIKE '%$search_escaped%' OR
+        m.FECHA LIKE '%$search_escaped%'
     )";
-}
-
-if ($type_filter) {
-    $type_escaped = db()->escape($type_filter);
-    $where .= ($where ? " AND " : " WHERE ") . "m.TIPO_MOVIMIENTO = '$type_escaped'";
 }
 
 // Obtener total de movimientos
 $count_query = db()->select("
     SELECT COUNT(DISTINCT m.ID_MOVIMIENTO) as total 
     FROM movimientos m
-    INNER JOIN productos p ON m.ID_PRODUCTO = p.ID_PRODUCTO
+    LEFT JOIN productos p ON m.ID_PRODUCTO = p.ID_PRODUCTO
+    LEFT JOIN lotes l ON m.ID_LOTE = l.ID_LOTE
+    LEFT JOIN usuarios u ON m.ID_USUARIO = u.ID_USUARIO
+    LEFT JOIN ubicaciones u_o ON m.ID_UBICACION_ORIGEN = u_o.ID_UBICACION
+    LEFT JOIN ubicaciones u_d ON m.ID_UBICACION_DESTINO = u_d.ID_UBICACION
     $where
 ");
 $total = $count_query[0]['total'] ?? 0;
@@ -53,7 +58,6 @@ $movimientos = db()->select("
         m.TIPO_MOVIMIENTO,
         m.CANTIDAD,
         m.FECHA,
-        p.ID_PRODUCTO,
         p.NOMBRE as PRODUCTO_NOMBRE,
         p.SKU,
         l.CODIGO_LOTE,
@@ -62,9 +66,9 @@ $movimientos = db()->select("
         u_o.CODIGO_UBICACION as UBICACION_ORIGEN,
         u_d.CODIGO_UBICACION as UBICACION_DESTINO
     FROM movimientos m
-    INNER JOIN productos p ON m.ID_PRODUCTO = p.ID_PRODUCTO
-    INNER JOIN lotes l ON m.ID_LOTE = l.ID_LOTE
-    INNER JOIN usuarios u ON m.ID_USUARIO = u.ID_USUARIO
+    LEFT JOIN productos p ON m.ID_PRODUCTO = p.ID_PRODUCTO
+    LEFT JOIN lotes l ON m.ID_LOTE = l.ID_LOTE
+    LEFT JOIN usuarios u ON m.ID_USUARIO = u.ID_USUARIO
     LEFT JOIN ubicaciones u_o ON m.ID_UBICACION_ORIGEN = u_o.ID_UBICACION
     LEFT JOIN ubicaciones u_d ON m.ID_UBICACION_DESTINO = u_d.ID_UBICACION
     $where
@@ -188,6 +192,26 @@ include __DIR__ . '/./../layouts/header.php';
 
         .btn-search:hover {
             background: #5a6268;
+        }
+
+        .btn-reset {
+            background: #e9ecef;
+            color: #495057;
+            border: none;
+            padding: 10px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-reset:hover {
+            background: #dee2e6;
+            color: #0b1e36;
         }
 
         .filter-select {
@@ -360,21 +384,20 @@ include __DIR__ . '/./../layouts/header.php';
             <input 
                 type="text" 
                 name="search" 
-                placeholder="Buscar por producto, SKU o código de lote..." 
+                placeholder="Buscar por Tipo, Producto, SKU, Lote, Cantidad, Ubicación, Usuario o Fecha..." 
                 value="<?= htmlspecialchars($search) ?>"
                 class="search-input"
             >
             
-            <select name="type" class="filter-select">
-                <option value="">Todos los tipos</option>
-                <option value="RECEPCION" <?= $type_filter === 'RECEPCION' ? 'selected' : '' ?>>Recepción</option>
-                <option value="TRANSFERENCIA" <?= $type_filter === 'TRANSFERENCIA' ? 'selected' : '' ?>>Transferencia</option>
-                <option value="SALIDA" <?= $type_filter === 'SALIDA' ? 'selected' : '' ?>>Salida</option>
-            </select>
-
             <button type="submit" class="btn-search">
                 <i class="bi bi-search"></i> Buscar
             </button>
+
+            <?php if ($search): ?>
+            <a href="movimientos.php" class="btn-reset">
+                <i class="bi bi-x-circle"></i> Limpiar
+            </a>
+            <?php endif; ?>
         </form>
     </div>
 
@@ -392,7 +415,6 @@ include __DIR__ . '/./../layouts/header.php';
                     <th>Origen → Destino</th>
                     <th>Usuario</th>
                     <th>Fecha</th>
-                    <th>Acciones</th>
                 </tr>
             </thead>
             <tbody>
@@ -434,15 +456,6 @@ include __DIR__ . '/./../layouts/header.php';
                     </td>
                     <td><?= htmlspecialchars($mov['USUARIO_NOMBRE']) ?></td>
                     <td><?= formatDate($mov['FECHA']) ?></td>
-                    <td>
-                        <div class="table-actions">
-                            <a href="movimiento_eliminar.php?id=<?= $mov['ID_MOVIMIENTO'] ?>" 
-                               class="btn-small btn-delete"
-                               onclick="return confirm('¿Estás seguro de que deseas eliminar este movimiento?');">
-                                <i class="bi bi-trash"></i> Eliminar
-                            </a>
-                        </div>
-                    </td>
                 </tr>
                 <?php endforeach; ?>
             </tbody>
@@ -458,13 +471,13 @@ include __DIR__ . '/./../layouts/header.php';
 
         // Botón anterior
         if ($page > 1) {
-            echo '<a href="?search=' . urlencode($search) . '&type=' . urlencode($type_filter) . '&page=' . ($page - 1) . '">';
+            echo '<a href="?search=' . urlencode($search) . '&page=' . ($page - 1) . '">';
             echo '<i class="bi bi-chevron-left"></i> Anterior</a>';
         }
 
         // Números de página
         if ($start_page > 1) {
-            echo '<a href="?search=' . urlencode($search) . '&type=' . urlencode($type_filter) . '&page=1">1</a>';
+            echo '<a href="?search=' . urlencode($search) . '&page=1">1</a>';
             if ($start_page > 2) echo '<span>...</span>';
         }
 
@@ -472,18 +485,18 @@ include __DIR__ . '/./../layouts/header.php';
             if ($i === $page) {
                 echo '<span class="current">' . $i . '</span>';
             } else {
-                echo '<a href="?search=' . urlencode($search) . '&type=' . urlencode($type_filter) . '&page=' . $i . '">' . $i . '</a>';
+                echo '<a href="?search=' . urlencode($search) . '&page=' . $i . '">' . $i . '</a>';
             }
         }
 
         if ($end_page < $total_pages) {
             if ($end_page < $total_pages - 1) echo '<span>...</span>';
-            echo '<a href="?search=' . urlencode($search) . '&type=' . urlencode($type_filter) . '&page=' . $total_pages . '">' . $total_pages . '</a>';
+            echo '<a href="?search=' . urlencode($search) . '&page=' . $total_pages . '">' . $total_pages . '</a>';
         }
 
         // Botón siguiente
         if ($page < $total_pages) {
-            echo '<a href="?search=' . urlencode($search) . '&type=' . urlencode($type_filter) . '&page=' . ($page + 1) . '">';
+            echo '<a href="?search=' . urlencode($search) . '&page=' . ($page + 1) . '">';
             echo 'Siguiente <i class="bi bi-chevron-right"></i></a>';
         }
         ?>

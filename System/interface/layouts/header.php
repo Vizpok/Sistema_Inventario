@@ -27,10 +27,10 @@
                     // Convertir ruta a formato consistente
                     $script_path = str_replace('\\', '/', $_SERVER['SCRIPT_FILENAME']);
                     $is_dashboard = strpos($script_path, '/dashboard/') !== false;
-                    $is_inventory = strpos($script_path, '/inventory/') !== false && strpos($script_path, '/catalog/') === false;
+                    $is_inventory = strpos($script_path, '/catalog/inventory/') !== false;
                     $is_reception = strpos($script_path, '/reception/') !== false;
                     $is_movements = strpos($script_path, '/movements/') !== false;
-                    $is_catalog = strpos($script_path, '/catalog/') !== false;
+                    $is_catalog = strpos($script_path, '/catalog/') !== false && strpos($script_path, '/catalog/inventory/') === false;
                 ?>
                 
                 <li>

@@ -13,8 +13,14 @@ requireAuth();
 $page_title = 'Nueva Salida';
 $base_url = '/Sistema_Inventario';
 
-// Obtener productos
-$productos = db()->select("SELECT ID_PRODUCTO, NOMBRE, SKU FROM productos ORDER BY NOMBRE ASC");
+// Obtener productos con inventario disponible
+$productos = db()->select("
+    SELECT DISTINCT p.ID_PRODUCTO, p.NOMBRE, p.SKU 
+    FROM productos p
+    INNER JOIN inventario i ON p.ID_PRODUCTO = i.ID_PRODUCTO
+    WHERE (i.CANTIDAD_TOTAL - i.CANTIDAD_RESERVADA) > 0
+    ORDER BY p.NOMBRE ASC
+");
 
 include __DIR__ . '/./../layouts/header.php';
 ?>

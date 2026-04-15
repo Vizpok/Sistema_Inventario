@@ -4,8 +4,10 @@
  * Retorna las ubicaciones donde existe inventario para un producto-lote específico
  */
 
-require_once __DIR__ . '/../../../bootstrap.php';
+require_once __DIR__ . '/../../bootstrap.php';
 header('Content-Type: application/json; charset=utf-8');
+
+$response = ['success' => false, 'ubicaciones' => [], 'error' => null];
 
 try {
     $id_producto = isset($_POST['id_producto']) ? (int)$_POST['id_producto'] : 0;
@@ -13,9 +15,24 @@ try {
 
     if ($id_producto <= 0 || $id_lote <= 0) {
         http_response_code(400);
-        exit(json_encode(['success' => false, 'ubicaciones' => []], JSON_UNESCAPED_UNICODE));
+        $response['error'] = 'Parámetros inválidos';
+        exit(json_encode($response, JSON_UNESCAPED_UNICODE));
     }
 
+    // Verificar que el producto y lote existen
+    $producto = db()->select("SELECT ID_PRODUCTO FROM productos WHERE ID_PRODUCTO = $id_producto LIMIT 1");
+    if (empty($producto)) {
+        $response['error'] = 'Producto no encontrado';
+        exit(json_encode($response, JSON_UNESCAPED_UNICODE));
+    }
+
+    $lote = db()->select("SELECT ID_LOTE FROM lotes WHERE ID_LOTE = $id_lote LIMIT 1");
+    if (empty($lote)) {
+        $response['error'] = 'Lote no encontrado';
+        exit(json_encode($response, JSON_UNESCAPED_UNICODE));
+    }
+
+    // Obtener ubicaciones con inventario disponible
     $ubicaciones = db()->select("
         SELECT 
             u.ID_UBICACION,
@@ -31,10 +48,14 @@ try {
         ORDER BY u.CODIGO_UBICACION ASC
     ");
 
-    exit(json_encode(['success' => true, 'ubicaciones' => $ubicaciones ?: []], JSON_UNESCAPED_UNICODE));
+    $response['success'] = true;
+    $response['ubicaciones'] = $ubicaciones ?: [];
+
 } catch (Throwable $e) {
     http_response_code(500);
-    exit(json_encode(['success' => false, 'error' => $e->getMessage(), 'ubicaciones' => []], JSON_UNESCAPED_UNICODE));
+    $response['error'] = $e->getMessage();
 }
+
+exit(json_encode($response, JSON_UNESCAPED_UNICODE));
 
 

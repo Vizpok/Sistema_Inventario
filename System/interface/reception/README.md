@@ -4,9 +4,9 @@ Módulo de recepción de almacén.
 
 ## Estado
 
-Este módulo está **pendiente de implementación**. Actualmente solo existe esta guía.
+Este módulo está **implementado**. Incluye formulario de recepción y procesamiento de entradas.
 
-## Alcance previsto
+## Archivos Implementados
 
 - `recepcion.php`: vista de entrada de almacén
 - `recepcion_procesar.php`: registro de entradas y actualización de existencias
@@ -48,6 +48,39 @@ Dashboard lee datos actualizados
 ## Notas de Implementación
 
 - Registrar fecha, producto, cantidad, ubicación y referencia de recepción
+- Validar que el producto existe en la base de datos
+- Verificar que la ubicación esté disponible
+- Generar automáticamente el ID de movimiento
+- Actualizar el stock disponible en la tabla `inventario`
+- Registrar el movimiento en la tabla `movimientos` con tipo 'RECEPCION'
+
+## Estructura de Archivos
+
+- `recepcion.php`: Interfaz principal para registrar recepciones
+- `recepcion_procesar.php`: Script de procesamiento que maneja la lógica de inserción y actualización
+
+## Flujo de Trabajo
+
+1. Usuario accede a `recepcion.php`
+2. Selecciona producto, cantidad, ubicación y proveedor
+3. Envía el formulario a `recepcion_procesar.php`
+4. Se valida la información
+5. Se inserta en `movimientos` y se actualiza `inventario`
+6. Redirección con mensaje de éxito o error
+
+## Validaciones Requeridas
+
+- Producto debe existir
+- Cantidad debe ser positiva
+- Ubicación debe ser válida
+- Referencia de recepción no debe estar duplicada
+
+## Integración con Otros Módulos
+
+- **Productos**: Obtiene lista de productos disponibles
+- **Ubicaciones**: Lista ubicaciones para asignar stock
+- **Proveedores**: Asocia recepción con proveedor
+- **Dashboard**: Actualiza métricas automáticamente
 - Crear lotes para cada recepción (importante para rastrabilidad)
 - Incrementar cantidad en tabla `inventario`
 - Registrar movimiento automáticamente en tabla `movimientos`

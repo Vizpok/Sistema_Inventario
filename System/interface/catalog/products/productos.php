@@ -23,15 +23,23 @@ $offset = ($page - 1) * $per_page;
 $where = '';
 if ($search) {
     $search_escaped = db()->escape($search);
-    $where = " WHERE p.NOMBRE LIKE '%$search_escaped%' OR p.SKU LIKE '%$search_escaped%' OR p.CODIGO_BARRAS LIKE '%$search_escaped%'";
+    $where = " WHERE p.NOMBRE LIKE '%$search_escaped%' 
+              OR p.SKU LIKE '%$search_escaped%' 
+              OR p.CODIGO_BARRAS LIKE '%$search_escaped%'
+              OR c.NOMBRE LIKE '%$search_escaped%'
+              OR p.STOCK_MINIMO LIKE '%$search_escaped%'";
 }
 
 // Obtener total de productos
-$count_query = db()->select("SELECT COUNT(*) as total FROM productos p $where");
+$count_query = db()->select("
+    SELECT COUNT(*) as total FROM productos p
+    LEFT JOIN categorias c ON p.ID_CATEGORIA = c.ID_CATEGORIA
+    $where
+");
 $total = $count_query[0]['total'] ?? 0;
 $total_pages = ceil($total / $per_page);
 
-// Obtener productos de la página actual
+// Obtener productos de la página actual con información de inventario
 $productos = db()->select("
     SELECT 
         p.ID_PRODUCTO,
@@ -39,10 +47,14 @@ $productos = db()->select("
         p.CODIGO_BARRAS,
         p.NOMBRE,
         p.STOCK_MINIMO,
-        c.NOMBRE as CATEGORIA
+        c.NOMBRE as CATEGORIA,
+        COALESCE(SUM(i.CANTIDAD_TOTAL - i.CANTIDAD_RESERVADA), 0) as CANTIDAD_DISPONIBLE,
+        CASE WHEN COALESCE(SUM(i.CANTIDAD_TOTAL - i.CANTIDAD_RESERVADA), 0) > 0 THEN 'CON_STOCK' ELSE 'SIN_STOCK' END as ESTADO_STOCK
     FROM productos p
     LEFT JOIN categorias c ON p.ID_CATEGORIA = c.ID_CATEGORIA
+    LEFT JOIN inventario i ON p.ID_PRODUCTO = i.ID_PRODUCTO
     $where
+    GROUP BY p.ID_PRODUCTO, p.SKU, p.CODIGO_BARRAS, p.NOMBRE, p.STOCK_MINIMO, c.NOMBRE
     ORDER BY p.NOMBRE ASC
     LIMIT $offset, $per_page
 ");
@@ -229,6 +241,29 @@ include __DIR__ . '/../../layouts/header.php';
             color: #28a745;
         }
 
+        .stock-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .stock-badge.con-stock {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .stock-badge.sin-stock {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .row-sin-stock {
+            opacity: 0.7;
+            background: #f9f9f9;
+        }
+
         .btn-action {
             padding: 6px 12px;
             border: none;
@@ -367,7 +402,7 @@ include __DIR__ . '/../../layouts/header.php';
 
     <div class="search-section">
         <form style="display: flex; gap: 12px; width: 100%;" method="GET">
-            <input 
+            <input SKU, código de barras, nombre, categoría o stock mínimo
                 type="text" 
                 name="search" 
                 class="search-input" 
@@ -391,17 +426,27 @@ include __DIR__ . '/../../layouts/header.php';
                     <th>Nombre</th>
                     <th>Categoría</th>
                     <th>Stock Mínimo</th>
+                    <th>Estado</th>
                     <th>Acciones</th>
                 </tr>
             </thead>
             <tbody>
                 <?php foreach ($productos as $producto): ?>
-                <tr>
+                <tr class="<?= $producto['ESTADO_STOCK'] === 'SIN_STOCK' ? 'row-sin-stock' : '' ?>">
                     <td><span class="sku-badge"><?= $producto['SKU'] ?></span></td>
                     <td><?= $producto['CODIGO_BARRAS'] ?? '-' ?></td>
                     <td><strong><?= $producto['NOMBRE'] ?></strong></td>
                     <td><?= $producto['CATEGORIA'] ?? '-' ?></td>
                     <td><?= number_format($producto['STOCK_MINIMO']) ?></td>
+                    <td>
+                        <span class="stock-badge <?= $producto['ESTADO_STOCK'] === 'SIN_STOCK' ? 'sin-stock' : 'con-stock' ?>">
+                            <?php if ($producto['ESTADO_STOCK'] === 'SIN_STOCK'): ?>
+                                <i class="bi bi-exclamation-circle"></i> Sin Stock
+                            <?php else: ?>
+                                <i class="bi bi-check-circle"></i> Con Stock (<?= number_format($producto['CANTIDAD_DISPONIBLE']) ?>)
+                            <?php endif; ?>
+                        </span>
+                    </td>
                     <td>
                         <a href="productos_editar.php?id=<?= $producto['ID_PRODUCTO'] ?>" class="btn-action btn-edit">
                             <i class="bi bi-pencil"></i> Editar

@@ -166,6 +166,22 @@ include __DIR__ . '/../../layouts/header.php';
             margin-top: 6px;
         }
 
+        .form-group.error input {
+            border-color: #dc3545;
+            background: #fff5f5;
+        }
+
+        .form-group.error .error-message {
+            display: block;
+        }
+
+        .error-message {
+            color: #dc3545;
+            font-size: 12px;
+            margin-top: 6px;
+            display: none;
+        }
+
         @media (max-width: 768px) {
             .form-container {
                 padding: 20px;
@@ -205,6 +221,7 @@ include __DIR__ . '/../../layouts/header.php';
                             maxlength="10"
                         >
                         <div class="form-help">Identificador del pasillo (A, B, C, etc.)</div>
+                        <div class="error-message">El pasillo es requerido</div>
                     </div>
 
                     <div class="form-group">
@@ -218,6 +235,7 @@ include __DIR__ . '/../../layouts/header.php';
                             maxlength="10"
                         >
                         <div class="form-help">Número o identificador del estante</div>
+                        <div class="error-message">El estante es requerido</div>
                     </div>
 
                     <div class="form-group">
@@ -231,6 +249,7 @@ include __DIR__ . '/../../layouts/header.php';
                             maxlength="10"
                         >
                         <div class="form-help">Nivel dentro del estante (1, 2, 3, etc.)</div>
+                        <div class="error-message">El nivel es requerido</div>
                     </div>
                 </div>
             </div>
@@ -271,6 +290,41 @@ include __DIR__ . '/../../layouts/header.php';
         // Convertir pasillo a mayúsculas
         document.getElementById('pasillo').addEventListener('input', function() {
             this.value = this.value.toUpperCase();
+        });
+
+        // Validación del formulario
+        document.getElementById('formUbicacion').addEventListener('submit', function(e) {
+            let isValid = true;
+            const pasillo = document.getElementById('pasillo').value.trim();
+            const estante = document.getElementById('estante').value.trim();
+            const nivel = document.getElementById('nivel').value.trim();
+
+            // Limpiar errores previos
+            document.querySelectorAll('.form-group.error').forEach(el => {
+                el.classList.remove('error');
+            });
+
+            // Validar pasillo
+            if (!pasillo) {
+                document.getElementById('pasillo').parentElement.classList.add('error');
+                isValid = false;
+            }
+
+            // Validar estante
+            if (!estante) {
+                document.getElementById('estante').parentElement.classList.add('error');
+                isValid = false;
+            }
+
+            // Validar nivel
+            if (!nivel) {
+                document.getElementById('nivel').parentElement.classList.add('error');
+                isValid = false;
+            }
+
+            if (!isValid) {
+                e.preventDefault();
+            }
         });
     </script>
 
